@@ -1,0 +1,107 @@
+<odoo>
+    <template id="mm_stats_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <t t-set="report_currency" t-value="(docs and docs[:1].currency_id) or env.company.currency_id"/>
+                    <h2>Rapport Statistiques Mobile Money</h2>
+                    <p>
+                        Période:
+                        <t t-esc="date_from"/> - <t t-esc="date_to"/>
+                    </p>
+                    <h3>Résumé Transactions</h3>
+                    <ul class="list-unstyled">
+                        <li><strong>Nombre:</strong> <t t-esc="stats['transactions']['count']"/></li>
+                        <li><strong>Montant Total:</strong>
+                            <t t-if="format_amount">
+                                <t t-esc="format_amount(stats['transactions']['amount'], report_currency)"/>
+                            </t>
+                            <t t-else=""><t t-esc="stats['transactions']['amount']"/></t>
+                        </li>
+                        <li><strong>Frais:</strong>
+                            <t t-if="format_amount">
+                                <t t-esc="format_amount(stats['transactions']['fees'], report_currency)"/>
+                            </t>
+                            <t t-else=""><t t-esc="stats['transactions']['fees']"/></t>
+                        </li>
+                        <li><strong>Net:</strong>
+                            <t t-if="format_amount">
+                                <t t-esc="format_amount(stats['transactions']['net'], report_currency)"/>
+                            </t>
+                            <t t-else=""><t t-esc="stats['transactions']['net']"/></t>
+                        </li>
+                    </ul>
+
+                    <t t-if="stats.get('agents')">
+                        <h3>Agents</h3>
+                        <p>Total: <t t-esc="stats['agents']['count']"/></p>
+                        <table class="table table-sm">
+                            <thead><tr><th>Agent</th><th>Nb Tx</th><th>Montant</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="stats['agents'].get('all', [])" t-as="ag">
+                                    <td><t t-esc="ag['name']"/></td>
+                                    <td class="text-end"><t t-esc="ag['count']"/></td>
+                                    <td class="text-end">
+                                        <t t-if="format_amount">
+                                            <t t-esc="format_amount(ag['amount'], report_currency)"/>
+                                        </t>
+                                        <t t-else=""><t t-esc="ag['amount']"/></t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <t t-if="stats['agents'].get('top_ranking')">
+                            <h4>Classement Top <t t-esc="top_n"/> Agents
+                                (<t t-esc="'par Montant' if ranking_metric == 'amount' else 'par Nombre de Transactions'"/>)
+                            </h4>
+                            <table class="table table-sm">
+                                <thead><tr><th>#</th><th>Agent</th><th class="text-end">Valeur</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="enumerate(stats['agents']['top_ranking'] or [])" t-as="item">
+                                        <td><t t-esc="item[0] + 1"/></td>
+                                        <td><t t-esc="item[1][0]"/></td>
+                                        <td class="text-end">
+                                            <t t-if="ranking_metric == 'count'">
+                                                <t t-esc="item[1][1]"/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-if="format_amount">
+                                                    <t t-esc="format_amount(item[1][1], report_currency)"/>
+                                                </t>
+                                                <t t-else=""><t t-esc="item[1][1]"/></t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                    </t>
+
+                    <t t-if="stats.get('service_points')">
+                        <h3>Points de Service</h3>
+                        <p>Total: <t t-esc="stats['service_points']['count']"/></p>
+                        <table class="table table-sm">
+                            <thead><tr><th>Point de Service</th><th>Nb Tx</th><th>Montant</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="stats['service_points']['by_point_count'].items()" t-as="item">
+                                    <t t-set="name" t-value="item[0]"/>
+                                    <t t-set="count" t-value="item[1]"/>
+                                    <t t-set="amount" t-value="stats['service_points']['by_point_amount'].get(name, 0.0)"/>
+                                    <td><t t-esc="name"/></td>
+                                    <td class="text-end"><t t-esc="count"/></td>
+                                    <td class="text-end">
+                                        <t t-if="format_amount">
+                                            <t t-esc="format_amount(amount, report_currency)"/>
+                                        </t>
+                                        <t t-else=""><t t-esc="amount"/></t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

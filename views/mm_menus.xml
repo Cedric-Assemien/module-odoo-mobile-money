@@ -5,15 +5,31 @@
     <menuitem id="menu_mm_dashboard" name="Tableau de Bord" parent="menu_mm_root" sequence="10" 
               action="mm_manager.mm_transaction_dashboard_action" 
               groups="mm_manager.mm_group_manager"/>
+    <menuitem id="menu_mm_generate_report" name="Générer Rapport" parent="menu_mm_dashboard" sequence="12"
+              action="mm_manager.mm_stats_report_wizard_action" groups="mm_manager.mm_group_manager"/>
+    <menuitem id="menu_mm_customer_dash_inscriptions" name="Inscriptions Clients" parent="menu_mm_dashboard" sequence="13"
+              action="mm_manager.mm_customer_signup_action" groups="mm_manager.mm_group_manager"/>
+    <menuitem id="menu_mm_customer_dash_tx" name="Transactions par Client" parent="menu_mm_dashboard" sequence="14"
+              action="mm_manager.mm_customer_tx_action" groups="mm_manager.mm_group_manager"/>
 
     <menuitem id="menu_mm_operations" name="Opérations" parent="menu_mm_root" sequence="20" 
               groups="mm_manager.mm_group_user"/>
+    <menuitem id="menu_mm_ops_mgmt" name="Gestion des Agents &amp; Points" parent="menu_mm_operations" sequence="5" groups="mm_manager.mm_group_user"/>
     <menuitem id="menu_mm_customers" name="Clients" parent="menu_mm_operations" sequence="10" 
               action="mm_manager.mm_customer_action" 
               groups="mm_manager.mm_group_user"/>
     <menuitem id="menu_mm_transactions" name="Transactions" parent="menu_mm_operations" sequence="20" 
               action="mm_manager.mm_transaction_action" 
               groups="mm_manager.mm_group_user"/>
+    <menuitem id="menu_mm_agents" name="Agents" parent="menu_mm_ops_mgmt" sequence="10"
+              action="mm_manager.mm_agent_action" groups="mm_manager.mm_group_user"/>
+    <menuitem id="menu_mm_ops_service_points" name="Points de Service" parent="menu_mm_ops_mgmt" sequence="20"
+              action="mm_manager.mm_service_point_action" groups="mm_manager.mm_group_user"/>
+    <menuitem id="menu_mm_agents_performance" name="Performance Agents" parent="menu_mm_dashboard" sequence="15"
+              action="mm_manager.mm_agent_performance_action" groups="mm_manager.mm_group_manager"/>
+
+    <menuitem id="menu_mm_service_points_dashboard" name="Activité Points de Service" parent="menu_mm_dashboard" sequence="16"
+              action="mm_manager.mm_service_point_activity_action" groups="mm_manager.mm_group_manager"/>
 
     <menuitem id="menu_mm_configuration" name="Configuration" parent="menu_mm_root" sequence="90" 
               groups="mm_manager.mm_group_settings"/>

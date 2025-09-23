@@ -1,0 +1,9 @@
+<odoo>
+    <record id="mm_stats_report_action" model="ir.actions.report">
+        <field name="name">Rapport Statistiques Mobile Money</field>
+        <field name="model">mm.stats.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">mm_manager.mm_stats_report_template</field>
+        <field name="report_file">mm_manager.mm_stats_report_template</field>
+    </record>
+</odoo>

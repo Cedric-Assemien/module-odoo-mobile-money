@@ -1,4 +1,5 @@
 <odoo>
+    <!-- Vue graph existante pour Transactions (déjà présente) -->
     <record id="mm_transaction_kanban" model="ir.ui.view">
         <field name="name">mm.transaction.kanban</field>
         <field name="model">mm.transaction</field>
@@ -34,5 +35,63 @@
                 </templates>
             </kanban>
         </field>
+    </record>
+
+    <!-- Activité par Point de Service -->
+    <record id="mm_service_point_transaction_graph" model="ir.ui.view">
+        <field name="name">mm.transaction.graph.by.service.point</field>
+        <field name="model">mm.transaction</field>
+        <field name="arch" type="xml">
+            <graph string="Activité Points de Service" type="bar">
+                <field name="amount" type="measure"/>
+                <field name="service_point_id" type="row"/>
+                <field name="transaction_date" interval="month" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="mm_service_point_activity_action" model="ir.actions.act_window">
+        <field name="name">Activité Points de Service</field>
+        <field name="res_model">mm.transaction</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="view_id" ref="mm_service_point_transaction_graph"/>
+        <field name="search_view_id" ref="mm_transaction_search"/>
+        <field name="context">{'search_default_group_service_point': 1, 'search_default_filter_last_30_days': 1}</field>
+    </record>
+
+    <!-- Inscription Clients par jour/heure -->
+    <record id="mm_customer_signup_graph" model="ir.ui.view">
+        <field name="name">mm.customer.graph.signup</field>
+        <field name="model">mm.customer</field>
+        <field name="arch" type="xml">
+            <graph string="Inscriptions Clients" type="line">
+                <field name="create_date" interval="day" type="row"/>
+            </graph>
+        </field>
+    </record>
+    <record id="mm_customer_signup_action" model="ir.actions.act_window">
+        <field name="name">Inscriptions Clients</field>
+        <field name="res_model">mm.customer</field>
+        <field name="view_mode">graph,list</field>
+        <field name="view_id" ref="mm_customer_signup_graph"/>
+    </record>
+
+    <!-- Total transactions par client -->
+    <record id="mm_customer_tx_graph" model="ir.ui.view">
+        <field name="name">mm.transaction.graph.by.customer</field>
+        <field name="model">mm.transaction</field>
+        <field name="arch" type="xml">
+            <graph string="Transactions par Client" type="bar">
+                <field name="amount" type="measure"/>
+                <field name="customer_id" type="row"/>
+            </graph>
+        </field>
+    </record>
+    <record id="mm_customer_tx_action" model="ir.actions.act_window">
+        <field name="name">Transactions par Client</field>
+        <field name="res_model">mm.transaction</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="view_id" ref="mm_customer_tx_graph"/>
+        <field name="search_view_id" ref="mm_transaction_search"/>
     </record>
 </odoo>

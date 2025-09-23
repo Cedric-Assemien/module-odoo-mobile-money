@@ -1,0 +1,17 @@
+<odoo noupdate="1">
+    <!-- Tâche planifiée exécutée une fois pour créer les mm.agent manquants -->
+    <record id="ir_cron_mm_agent_sync_once" model="ir.cron">
+        <field name="name">MM: Synchroniser les Agents</field>
+        <!-- Exécuter sur le modèle mm.agent -->
+    <field name="model_id" ref="mm_manager.model_mm_agent"/>
+        <field name="state">code</field>
+        <!-- Exécuter avec les droits superuser pour éviter les ACL -->
+        <field name="user_id" ref="base.user_root"/>
+        <!-- Appeler la méthode sur le modèle -->
+        <field name="code">model.sync_users_as_agents()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <!-- Cron actif; nous le désactiverons via code après 1ère exécution -->
+        <field name="active">True</field>
+    </record>
+</odoo>

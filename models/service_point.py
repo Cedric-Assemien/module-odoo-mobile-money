@@ -34,6 +34,17 @@ class MobileMoneyServicePoint(models.Model):
         string="Réseaux Supportés",
     )
     active = fields.Boolean(string="Actif", default=True)
+    # Localisation
+    street = fields.Char(string="Adresse")
+    city = fields.Char(string="Ville")
+    latitude = fields.Float(string="Latitude")
+    longitude = fields.Float(string="Longitude")
+
+    # Statistiques
+    agent_count = fields.Integer(string="Nombre d'agents", compute="_compute_counts", store=False)
+    transaction_count = fields.Integer(string="Nb. transactions", compute="_compute_counts", store=False)
+    transaction_total_amount = fields.Monetary(string="Total Montant", compute="_compute_total", store=False, currency_field="currency_id")
+    currency_id = fields.Many2one("res.currency", related="company_id.currency_id", store=True, readonly=True)
 
     _sql_constraints = [
         ("mm_service_point_code_unique", "unique(code, company_id)", "Service point code must be unique per company."),
@@ -45,3 +56,17 @@ class MobileMoneyServicePoint(models.Model):
         for record in self:
             if record.owner_id and mm_manager_group and mm_manager_group not in record.owner_id.groups_id:
                 raise ValidationError("Le propriétaire doit faire partie du groupe Gestionnaire Mobile Money.")
+
+    def _compute_counts(self):
+        for rec in self:
+            rec.agent_count = len(rec.agent_ids)
+            rec.transaction_count = self.env["mm.transaction"].search_count([
+                ("service_point_id", "=", rec.id), ("state", "=", "confirmed")
+            ])
+
+    def _compute_total(self):
+        for rec in self:
+            txs = self.env["mm.transaction"].search([
+                ("service_point_id", "=", rec.id), ("state", "=", "confirmed")
+            ])
+            rec.transaction_total_amount = sum(txs.mapped("amount"))

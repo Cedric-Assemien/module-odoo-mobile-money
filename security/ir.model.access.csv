@@ -11,3 +11,6 @@ access_mm_network_user,access.mm.network.user,model_mm_network,mm_manager.mm_gro
 access_mm_policy_manager,access.mm.policy.manager,model_mm_limit_policy,mm_manager.mm_group_manager,1,0,0,0
 access_mm_service_point_user,access.mm.service.point.user,model_mm_service_point,mm_manager.mm_group_user,1,0,0,0
 access_mm_deplafonnement_wizard,access.mm.deplafonnement.wizard,model_mm_deplafonnement_wizard,base.group_user,1,1,1,1
+access_mm_agent_user,access.mm.agent.user,model_mm_agent,mm_manager.mm_group_user,1,1,1,0
+access_mm_agent_manager,access.mm.agent.manager,model_mm_agent,mm_manager.mm_group_manager,1,1,1,1
+access_mm_stats_report_wizard,access.mm.stats.report.wizard,model_mm_stats_report_wizard,base.group_user,1,1,1,1

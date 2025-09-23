@@ -1,0 +1,36 @@
+<odoo>
+    <record id="mm_stats_report_wizard_form" model="ir.ui.view">
+        <field name="name">mm.stats.report.wizard.form</field>
+        <field name="model">mm.stats.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Générer Rapport Statistiques">
+                <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+                <group string="Sections">
+                    <field name="include_clients"/>
+                    <field name="include_agents"/>
+                    <field name="include_service_points"/>
+                    <field name="include_transactions"/>
+                </group>
+                <group string="Classement Agents">
+                    <field name="top_n"/>
+                    <field name="ranking_metric"/>
+                </group>
+                <footer>
+                    <button string="Générer" type="object" name="action_generate" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="mm_stats_report_wizard_action" model="ir.actions.act_window">
+        <field name="name">Générer Rapport</field>
+        <field name="res_model">mm.stats.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="mm_stats_report_wizard_form"/>
+    </record>
+</odoo>

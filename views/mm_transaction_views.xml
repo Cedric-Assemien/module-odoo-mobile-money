@@ -130,4 +130,14 @@
             <p class="o_view_nocontent_smiling_face">Créez des transactions pour alimenter le tableau de bord.</p>
         </field>
     </record>
+
+    <!-- Bouton barre d'actions pour générer le rapport -->
+    <record id="mm_transaction_action_server_generate_report" model="ir.actions.server">
+        <field name="name">Générer Rapport</field>
+        <field name="model_id" ref="mm_manager.model_mm_transaction"/>
+        <field name="state">code</field>
+        <field name="code">action = env.ref('mm_manager.mm_stats_report_wizard_action').read()[0]</field>
+        <field name="binding_model_id" ref="mm_manager.model_mm_transaction"/>
+        <field name="binding_type">action</field>
+    </record>
 </odoo>

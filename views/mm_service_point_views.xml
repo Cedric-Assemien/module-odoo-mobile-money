@@ -7,6 +7,9 @@
                 <field name="name"/>
                 <field name="code"/>
                 <field name="owner_id"/>
+                <field name="agent_count"/>
+                <field name="transaction_count"/>
+                <field name="transaction_total_amount"/>
                 <field name="company_id"/>
                 <field name="active"/>
             </list>
@@ -19,6 +22,14 @@
         <field name="arch" type="xml">
             <form string="Point de Service">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="action" context="{'search_default_service_point_id': id}" class="oe_stat_button" icon="fa-users" name="%(mm_agent_action)d">
+                            <field name="agent_count" widget="statinfo" string="Agents"/>
+                        </button>
+                        <button type="action" context="{'search_default_service_point_id': id}" class="oe_stat_button" icon="fa-exchange-alt" name="%(mm_manager.mm_transaction_action)d">
+                            <field name="transaction_count" widget="statinfo" string="Transactions"/>
+                        </button>
+                    </div>
                     <group>
                         <group>
                             <field name="name"/>
@@ -30,6 +41,17 @@
                         <group>
                             <field name="agent_ids" widget="many2many_tags"/>
                             <field name="network_ids" widget="many2many_tags"/>
+                            <field name="transaction_total_amount" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Localisation">
+                        <group>
+                            <field name="street"/>
+                            <field name="city"/>
+                        </group>
+                        <group>
+                            <field name="latitude"/>
+                            <field name="longitude"/>
                         </group>
                     </group>
                 </sheet>
@@ -46,6 +68,7 @@
                 <field name="code"/>
                 <field name="owner_id"/>
                 <field name="company_id"/>
+                <filter name="with_geo" string="Avec coordonnées" domain="['|',('latitude','!=',0),('longitude','!=',0)]"/>
                 <filter name="filter_active" string="Actif" domain="[('active', '=', True)]"/>
                 <filter name="filter_inactive" string="Inactif" domain="[('active', '=', False)]"/>
                 <group expand="0" string="Grouper Par">

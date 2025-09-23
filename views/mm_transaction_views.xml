@@ -1,0 +1,133 @@
+<odoo>
+    <record id="mm_transaction_tree" model="ir.ui.view">
+        <field name="name">mm.transaction.tree</field>
+        <field name="model">mm.transaction</field>
+        <field name="arch" type="xml">
+            <list string="Transactions" default_order="transaction_date desc">
+                <field name="name"/>
+                <field name="transaction_date"/>
+                <field name="transaction_type"/>
+                <field name="customer_id"/>
+                <field name="network_id"/>
+                <field name="service_point_id"/>
+                <field name="agent_id"/>
+                <field name="amount"/>
+                <field name="fee_amount"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mm_transaction_form" model="ir.ui.view">
+        <field name="name">mm.transaction.form</field>
+        <field name="model">mm.transaction</field>
+        <field name="arch" type="xml">
+            <form string="Transaction" class="o_mm_transaction_form">
+                <sheet>
+                    <header>
+                        <button name="action_confirm" type="object" string="Confirmer" class="btn-primary" invisible="state != 'draft'" groups="mm_manager.mm_group_user"/>
+                        <button name="action_refuse" type="object" string="Refuser" class="btn-secondary" invisible="state != 'draft'" groups="mm_manager.mm_group_user"/>
+                        <button name="action_reset_draft" type="object" string="Remettre en Brouillon" invisible="state == 'draft'" groups="mm_manager.mm_group_manager,mm_manager.mm_group_settings"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,refused" statusbar_colors="draft:muted"/>
+                    </header>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="transaction_date"/>
+                            <field name="transaction_type"/>
+                            <field name="customer_id"/>
+                            <field name="network_id"/>
+                            <field name="service_point_id"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="fee_amount" readonly="1"/>
+                            <field name="net_amount" readonly="1"/>
+                            <field name="commission_amount" readonly="1"/>
+                            <field name="monthly_usage_percentage" readonly="1" widget="progressbar" options="{'max': 100}"/>
+                        </group>
+                    </group>
+                    <group string="Additional Information">
+                        <field name="reference"/>
+                        <field name="agent_id"/>
+                        <field name="refusal_reason" readonly="state != 'draft'"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mm_transaction_search" model="ir.ui.view">
+        <field name="name">mm.transaction.search</field>
+        <field name="model">mm.transaction</field>
+        <field name="arch" type="xml">
+            <search string="Transactions">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="network_id"/>
+                <field name="service_point_id"/>
+                <field name="agent_id"/>
+                <field name="transaction_type"/>
+                <filter name="filter_confirmed" string="Confirmées" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="filter_refused" string="Refusées" domain="[('state', '=', 'refused')]"/>
+                <separator/>
+                <filter name="filter_today" string="Aujourd'hui" domain="[('transaction_date', '=', context_today())]"/>
+                <filter name="filter_last_7_days" string="7 Derniers Jours" domain="[('transaction_date', '&gt;=', (context_today() - datetime.timedelta(days=7)))]"/>
+                <filter name="filter_last_30_days" string="30 Derniers Jours" domain="[('transaction_date', '&gt;=', (context_today() - datetime.timedelta(days=30)))]"/>
+                <group expand="0" string="Grouper Par">
+                    <filter name="group_network" string="Réseau" context="{'group_by': 'network_id'}"/>
+                    <filter name="group_agent" string="Agent" context="{'group_by': 'agent_id'}"/>
+                    <filter name="group_service_point" string="Point de Service" context="{'group_by': 'service_point_id'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'transaction_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="mm_transaction_graph" model="ir.ui.view">
+        <field name="name">mm.transaction.graph</field>
+        <field name="model">mm.transaction</field>
+        <field name="arch" type="xml">
+            <graph string="Transactions" type="bar">
+                <field name="amount" type="measure"/>
+                <field name="transaction_type" type="row"/>
+                <field name="network_id" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="mm_transaction_pivot" model="ir.ui.view">
+        <field name="name">mm.transaction.pivot</field>
+        <field name="model">mm.transaction</field>
+        <field name="arch" type="xml">
+            <pivot string="Transactions">
+                <field name="amount" type="measure"/>
+                <field name="fee_amount" type="measure"/>
+                <field name="commission_amount" type="measure"/>
+                <field name="transaction_date" interval="month" type="row"/>
+                <field name="network_id" type="col"/>
+                <field name="transaction_type" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="mm_transaction_action" model="ir.actions.act_window">
+        <field name="name">Transactions</field>
+        <field name="res_model">mm.transaction</field>
+        <field name="view_mode">list,kanban,form,graph,pivot</field>
+        <field name="search_view_id" ref="mm_transaction_search"/>
+        <field name="context">{'search_default_filter_last_30_days': 1}</field>
+    </record>
+
+    <record id="mm_transaction_dashboard_action" model="ir.actions.act_window">
+        <field name="name">Tableau de Bord Mobile Money</field>
+        <field name="res_model">mm.transaction</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="view_id" ref="mm_transaction_graph"/>
+        <field name="search_view_id" ref="mm_transaction_search"/>
+        <field name="context">{'search_default_filter_last_30_days': 1, 'search_default_group_network': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez des transactions pour alimenter le tableau de bord.</p>
+        </field>
+    </record>
+</odoo>

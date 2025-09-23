@@ -1,0 +1,66 @@
+<odoo>
+    <record id="mm_policy_tree" model="ir.ui.view">
+        <field name="name">mm.limit.policy.tree</field>
+        <field name="model">mm.limit.policy</field>
+        <field name="arch" type="xml">
+            <list string="Politiques">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="per_transaction_limit"/>
+                <field name="monthly_limit"/>
+                <field name="requires_identity_attachment"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mm_policy_form" model="ir.ui.view">
+        <field name="name">mm.limit.policy.form</field>
+        <field name="model">mm.limit.policy</field>
+        <field name="arch" type="xml">
+            <form string="Politique">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="per_transaction_limit"/>
+                            <field name="monthly_limit"/>
+                            <field name="requires_identity_attachment"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" widget="text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mm_policy_search" model="ir.ui.view">
+        <field name="name">mm.limit.policy.search</field>
+        <field name="model">mm.limit.policy</field>
+        <field name="arch" type="xml">
+            <search string="Politiques">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <filter name="filter_standard" string="Standard" domain="[('code', '=', 'standard')]"/>
+                <filter name="filter_deplafonne" string="Déplafonné" domain="[('code', '=', 'deplafonne')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="mm_policy_action" model="ir.actions.act_window">
+        <field name="name">Politiques</field>
+        <field name="res_model">mm.limit.policy</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="mm_policy_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,11 @@
+<odoo>
+    <record id="mm_transaction_report_action" model="ir.actions.report">
+        <field name="name">Mobile Money Transactions</field>
+        <field name="model">mm.transaction</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">mm_manager.mm_transaction_report_template</field>
+        <field name="report_file">mm_manager.mm_transaction_report_template</field>
+        <field name="binding_model_id" ref="mm_manager.model_mm_transaction"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

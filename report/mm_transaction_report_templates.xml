@@ -1,0 +1,78 @@
+<odoo>
+    <template id="mm_transaction_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <t t-set="report_currency" t-value="docs[:1].currency_id if docs else False"/>
+                    <h2>Mobile Money Transactions</h2>
+                    <p>
+                        <strong>Printed on:</strong>
+                        <span t-esc="format_date(context_today())"/>
+                    </p>
+                    <table class="table table-sm o_main_table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Reference</th>
+                                <th>Customer</th>
+                                <th>Type</th>
+                                <th>Network</th>
+                                <th class="text-end">Amount</th>
+                                <th class="text-end">Fees</th>
+                                <th class="text-end">Net</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="tx">
+                                <td t-esc="format_date(tx.transaction_date)"/>
+                                <td t-esc="tx.name"/>
+                                <td t-esc="tx.customer_id.name"/>
+                                <td t-esc="tx.get_selection_display('transaction_type')"/>
+                                <td t-esc="tx.network_id.name"/>
+                                <td class="text-end" t-esc="format_amount(tx.amount, tx.currency_id or report_currency)"/>
+                                <td class="text-end" t-esc="format_amount(tx.fee_amount, tx.currency_id or report_currency)"/>
+                                <td class="text-end" t-esc="format_amount(tx.net_amount, tx.currency_id or report_currency)"/>
+                                <td t-esc="tx.get_selection_display('state')"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mt-3">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li>
+                                    <strong>Total Transactions:</strong>
+                                    <span t-esc="len(docs)"/>
+                                </li>
+                                <li>
+                                    <strong>Confirmed:</strong>
+                                    <span t-esc="len(docs.filtered(lambda d: d.state == 'confirmed'))"/>
+                                </li>
+                                <li>
+                                    <strong>Refused:</strong>
+                                    <span t-esc="len(docs.filtered(lambda d: d.state == 'refused'))"/>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li>
+                                    <strong>Total Amount:</strong>
+                                    <span t-esc="format_amount(sum(docs.mapped('amount')), report_currency)"/>
+                                </li>
+                                <li>
+                                    <strong>Total Fees:</strong>
+                                    <span t-esc="format_amount(sum(docs.mapped('fee_amount')), report_currency)"/>
+                                </li>
+                                <li>
+                                    <strong>Total Net:</strong>
+                                    <span t-esc="format_amount(sum(docs.mapped('net_amount')), report_currency)"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

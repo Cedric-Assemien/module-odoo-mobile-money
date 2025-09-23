@@ -1,0 +1,21 @@
+<odoo>
+    <data noupdate="1">
+        <record id="mm_limit_policy_standard" model="mm.limit.policy">
+            <field name="name">Standard Policy</field>
+            <field name="code">standard</field>
+            <field name="per_transaction_limit">200000</field>
+            <field name="monthly_limit">200000</field>
+            <field name="requires_identity_attachment">0</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="mm_limit_policy_deplafonne" model="mm.limit.policy">
+            <field name="name">Deplafonne Policy</field>
+            <field name="code">deplafonne</field>
+            <field name="per_transaction_limit">2000000</field>
+            <field name="monthly_limit">10000000</field>
+            <field name="requires_identity_attachment">1</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+    </data>
+</odoo>

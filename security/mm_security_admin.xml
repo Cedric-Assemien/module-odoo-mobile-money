@@ -1,0 +1,15 @@
+<odoo>
+    <data noupdate="0">
+        <!-- This makes the System Administrator a member of the MM Manager group -->
+        <record id="mm_security_admin_system_group" model="res.groups">
+            <field name="name">System / Settings (MM Extended)</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_system')), (4, ref('mm_manager.mm_group_manager'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+        
+        <!-- Also add the admin user directly to the mm_group_manager -->
+        <record id="mm_manager.mm_group_manager" model="res.groups">
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+    </data>
+</odoo>

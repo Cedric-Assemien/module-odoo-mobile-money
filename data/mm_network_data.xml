@@ -1,0 +1,28 @@
+<odoo>
+    <data noupdate="1">
+        <record id="mm_network_orange" model="mm.network">
+            <field name="name">Orange Money</field>
+            <field name="code">ORANGE</field>
+            <field name="fee_percentage">1.0</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="mm_network_mtn" model="mm.network">
+            <field name="name">MTN Mobile Money</field>
+            <field name="code">MTN</field>
+            <field name="fee_percentage">1.2</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="mm_network_moov" model="mm.network">
+            <field name="name">Moov Money</field>
+            <field name="code">MOOV</field>
+            <field name="fee_percentage">1.1</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="mm_network_wave" model="mm.network">
+            <field name="name">Wave</field>
+            <field name="code">WAVE</field>
+            <field name="fee_percentage">0.8</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+    </data>
+</odoo>

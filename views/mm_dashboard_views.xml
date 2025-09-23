@@ -1,0 +1,38 @@
+<odoo>
+    <record id="mm_transaction_kanban" model="ir.ui.view">
+        <field name="name">mm.transaction.kanban</field>
+        <field name="model">mm.transaction</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="transaction_type" class="o_mm_transaction_kanban">
+                <field name="amount"/>
+                <field name="monthly_usage_percentage"/>
+                <field name="state"/>
+                <field name="transaction_date"/>
+                <field name="customer_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="o_kanban_record">
+                            <div class="o_kanban_primary_left">
+                                <strong><field name="name"/></strong>
+                                <div><field name="transaction_date"/></div>
+                                <div><field name="customer_id"/></div>
+                                <div><field name="network_id"/></div>
+                            </div>
+                            <div class="o_kanban_primary_right">
+                                <span class="o_stat_value">
+                                    <field name="amount" widget="monetary"/>
+                                </span>
+                                <div class="o_progress">
+                                    <field name="monthly_usage_percentage" widget="progressbar" options="{'max': 100}"/>
+                                </div>
+                                <div class="o_badge">
+                                    <field name="state" widget="badge"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

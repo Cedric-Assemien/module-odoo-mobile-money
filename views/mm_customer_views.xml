@@ -1,0 +1,103 @@
+<odoo>
+    <record id="mm_customer_tree" model="ir.ui.view">
+        <field name="name">mm.customer.tree</field>
+        <field name="model">mm.customer</field>
+        <field name="arch" type="xml">
+            <list string="Clients" default_order="name">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="status"/>
+                <field name="service_point_id"/>
+                <field name="agent_id"/>
+                <field name="monthly_transaction_total"/>
+                <field name="monthly_transaction_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mm_customer_form" model="ir.ui.view">
+        <field name="name">mm.customer.form</field>
+        <field name="model">mm.customer</field>
+        <field name="arch" type="xml">
+            <form string="Client" class="o_mm_customer_form">
+                <sheet>
+                    <header>
+                        <button name="action_request_deplafonnement" type="object" class="btn-primary" string="Demander Déplafonnement" invisible="is_deplafonne" groups="mm_manager.mm_group_user"/>
+                        <button name="action_set_standard_policy" type="object" string="Définir Standard" invisible="status == 'standard'" groups="mm_manager.mm_group_manager,mm_manager.mm_group_settings"/>
+                        <button name="action_set_deplafonne_policy" type="object" string="Définir Déplafonné" invisible="status == 'deplafonne'" groups="mm_manager.mm_group_manager,mm_manager.mm_group_settings"/>
+                        <field name="status" widget="statusbar" statusbar_visible="standard,deplafonne"/>
+                    </header>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_open_transactions" class="oe_stat_button" icon="fa-exchange-alt">
+                            <field name="monthly_transaction_count" widget="statinfo" string="Transactions"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="phone"/>
+                            <field name="service_point_id"/>
+                            <field name="agent_id"/>
+                        </group>
+                        <group>
+                            <field name="policy_id"/>
+                            <field name="status" readonly="1"/>
+                            <field name="identity_type"/>
+                            <field name="identity_number"/>
+                            <field name="identity_attachment_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Aperçu Mensuel">
+                        <field name="monthly_transaction_total" readonly="1"/>
+                        <field name="monthly_transaction_count" readonly="1"/>
+                        <field name="last_transaction_date" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Transactions">
+                            <field name="transaction_ids" readonly="1">
+                                <list string="Transactions" create="0" delete="0">
+                                    <field name="name"/>
+                                    <field name="transaction_date"/>
+                                    <field name="transaction_type"/>
+                                    <field name="state"/>
+                                    <field name="amount"/>
+                                    <field name="network_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mm_customer_search" model="ir.ui.view">
+        <field name="name">mm.customer.search</field>
+        <field name="model">mm.customer</field>
+        <field name="arch" type="xml">
+            <search string="Clients">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="service_point_id"/>
+                <field name="agent_id"/>
+                <filter name="filter_standard" string="Standard" domain="[('status', '=', 'standard')]"/>
+                <filter name="filter_deplafonne" string="Déplafonné" domain="[('status', '=', 'deplafonne')]"/>
+                <group expand="0" string="Grouper Par">
+                    <filter name="group_service_point" string="Point de Service" context="{'group_by': 'service_point_id'}"/>
+                    <filter name="group_agent" string="Agent" context="{'group_by': 'agent_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="mm_customer_action" model="ir.actions.act_window">
+        <field name="name">Clients</field>
+        <field name="res_model">mm.customer</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="mm_customer_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez votre premier client Mobile Money</p>
+        </field>
+    </record>
+</odoo>

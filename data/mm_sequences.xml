@@ -1,0 +1,11 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_mm_transaction" model="ir.sequence">
+            <field name="name">Mobile Money Transaction</field>
+            <field name="code">mm.transaction</field>
+            <field name="prefix">MMT%(y)s</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

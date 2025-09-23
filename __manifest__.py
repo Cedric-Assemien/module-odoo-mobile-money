@@ -1,0 +1,36 @@
+{
+    "name": "Mobile Money Manager",
+    "summary": "Gestion des transactions Mobile Money avec plafonds et deplafonnement",
+    "version": "18.0.1.0.0",
+    "category": "Accounting/Localizations",
+    "author": "Cedric Assemien",
+    "website": "",
+    "license": "LGPL-3",
+    "depends": [
+        "base",
+        "mail",
+        "contacts",
+        "web"
+    ],
+    "data": [
+        "security/mm_security_admin.xml",
+        "security/mm_security.xml",
+        "security/ir.model.access.csv",
+        "data/mm_sequences.xml",
+        "data/mm_limit_policies.xml",
+        "data/mm_network_data.xml",
+        "wizard/mm_deplafonnement_wizard_views.xml",
+        "views/mm_customer_views.xml",
+        "views/mm_transaction_views.xml",
+        "views/mm_service_point_views.xml",
+        "views/mm_policy_views.xml",
+        "views/mm_network_views.xml",
+        "views/mm_dashboard_views.xml",
+        "views/mm_menus.xml",
+        "report/mm_transaction_report_templates.xml",
+        "report/mm_transaction_report_actions.xml"
+    ],
+    "application": True,
+    "installable": True,
+    "auto_install": False
+}

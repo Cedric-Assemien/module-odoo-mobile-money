@@ -1,0 +1,65 @@
+<odoo>
+    <record id="mm_service_point_tree" model="ir.ui.view">
+        <field name="name">mm.service.point.tree</field>
+        <field name="model">mm.service.point</field>
+        <field name="arch" type="xml">
+            <list string="Points de Service">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="owner_id"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mm_service_point_form" model="ir.ui.view">
+        <field name="name">mm.service.point.form</field>
+        <field name="model">mm.service.point</field>
+        <field name="arch" type="xml">
+            <form string="Point de Service">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="owner_id"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="agent_ids" widget="many2many_tags"/>
+                            <field name="network_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mm_service_point_search" model="ir.ui.view">
+        <field name="name">mm.service.point.search</field>
+        <field name="model">mm.service.point</field>
+        <field name="arch" type="xml">
+            <search string="Points de Service">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="owner_id"/>
+                <field name="company_id"/>
+                <filter name="filter_active" string="Actif" domain="[('active', '=', True)]"/>
+                <filter name="filter_inactive" string="Inactif" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper Par">
+                    <filter name="group_owner" string="Propriétaire" context="{'group_by': 'owner_id'}"/>
+                    <filter name="group_company" string="Société" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="mm_service_point_action" model="ir.actions.act_window">
+        <field name="name">Points de Service</field>
+        <field name="res_model">mm.service.point</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="mm_service_point_search"/>
+    </record>
+</odoo>

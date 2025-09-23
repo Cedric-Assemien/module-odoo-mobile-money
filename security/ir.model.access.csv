@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mm_customer_user,access.mm.customer.user,model_mm_customer,mm_manager.mm_group_user,1,1,1,0
+access_mm_customer_manager,access.mm.customer.manager,model_mm_customer,mm_manager.mm_group_manager,1,1,1,1
+access_mm_transaction_user,access.mm.transaction.user,model_mm_transaction,mm_manager.mm_group_user,1,1,1,0
+access_mm_transaction_manager,access.mm.transaction.manager,model_mm_transaction,mm_manager.mm_group_manager,1,1,1,1
+access_mm_service_point_manager,access.mm.service.point.manager,model_mm_service_point,mm_manager.mm_group_manager,1,1,1,1
+access_mm_service_point_settings,access.mm.service.point.settings,model_mm_service_point,mm_manager.mm_group_settings,1,1,1,1
+access_mm_network_settings,access.mm.network.settings,model_mm_network,mm_manager.mm_group_settings,1,1,1,1
+access_mm_policy_settings,access.mm.policy.settings,model_mm_limit_policy,mm_manager.mm_group_settings,1,1,1,1
+access_mm_network_user,access.mm.network.user,model_mm_network,mm_manager.mm_group_user,1,0,0,0
+access_mm_policy_manager,access.mm.policy.manager,model_mm_limit_policy,mm_manager.mm_group_manager,1,0,0,0
+access_mm_service_point_user,access.mm.service.point.user,model_mm_service_point,mm_manager.mm_group_user,1,0,0,0
+access_mm_deplafonnement_wizard,access.mm.deplafonnement.wizard,model_mm_deplafonnement_wizard,base.group_user,1,1,1,1

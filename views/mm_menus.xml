@@ -3,7 +3,7 @@
     <menuitem id="menu_mm_root" name="Mobile Money" sequence="2"/>
 
     <menuitem id="menu_mm_dashboard" name="Tableau de Bord" parent="menu_mm_root" sequence="10" 
-              action="mm_manager.mm_transaction_dashboard_action" 
+              action="mm_manager.mm_main_dashboard_action" 
               groups="mm_manager.mm_group_manager"/>
     <menuitem id="menu_mm_generate_report" name="Générer Rapport" parent="menu_mm_dashboard" sequence="12"
               action="mm_manager.mm_stats_report_wizard_action" groups="mm_manager.mm_group_manager"/>
@@ -20,6 +20,12 @@
               groups="mm_manager.mm_group_user"/>
     <menuitem id="menu_mm_transactions" name="Transactions" parent="menu_mm_operations" sequence="20" 
               action="mm_manager.mm_transaction_action" 
+              groups="mm_manager.mm_group_user"/>
+    <menuitem id="menu_mm_balances" name="Soldes Clients" parent="menu_mm_operations" sequence="25" 
+              action="mm_manager.mm_balance_action" 
+              groups="mm_manager.mm_group_user"/>
+    <menuitem id="menu_mm_agent_balances" name="Soldes Agents" parent="menu_mm_operations" sequence="30" 
+              action="mm_manager.mm_agent_balance_action" 
               groups="mm_manager.mm_group_user"/>
     <menuitem id="menu_mm_agents" name="Agents" parent="menu_mm_ops_mgmt" sequence="10"
               action="mm_manager.mm_agent_action" groups="mm_manager.mm_group_user"/>

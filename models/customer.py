@@ -36,6 +36,7 @@ class MobileMoneyCustomer(models.Model):
     )
     service_point_id = fields.Many2one("mm.service.point", string="Point de Service", tracking=True)
     company_id = fields.Many2one("res.company", string="Société", default=lambda self: self.env.company, required=True, index=True)
+    active = fields.Boolean(string="Actif", default=True)
     currency_id = fields.Many2one(
         "res.currency",
         related="policy_id.currency_id",
@@ -43,10 +44,12 @@ class MobileMoneyCustomer(models.Model):
         readonly=True,
     )
     transaction_ids = fields.One2many("mm.transaction", "customer_id", string="Transactions")
+    balance_ids = fields.One2many("mm.balance", "customer_id", string="Soldes par Opérateur")
     monthly_transaction_total = fields.Monetary(string="Total Mensuel", compute="_compute_monthly_totals", store=False, currency_field="currency_id")
     monthly_transaction_count = fields.Integer(string="Nombre de Transactions Mensuelles", compute="_compute_monthly_totals", store=False)
     last_transaction_date = fields.Date(string="Dernière Transaction", compute="_compute_last_transaction", store=False)
     is_deplafonne = fields.Boolean(string="Est Déplafonné", compute="_compute_is_deplafonne", store=True)
+    total_balance = fields.Monetary(string="Solde Total", compute="_compute_total_balance", store=False, currency_field="currency_id")
 
     _sql_constraints = [
         ("mm_customer_phone_unique", "unique(phone, company_id)", "A customer phone number must be unique per company."),
@@ -175,6 +178,11 @@ class MobileMoneyCustomer(models.Model):
         self.identity_attachment_id = attachment.id
         return attachment
 
+    @api.depends("balance_ids.balance")
+    def _compute_total_balance(self):
+        for record in self:
+            record.total_balance = sum(record.balance_ids.mapped("balance"))
+
     def _get_monthly_total(self, date_from, date_to):
         self.ensure_one()
         domain = [
@@ -185,3 +193,53 @@ class MobileMoneyCustomer(models.Model):
             ("transaction_date", "<=", date_to),
         ]
         return sum(self.env["mm.transaction"].search(domain).mapped("amount"))
+
+    def get_balance_for_network(self, network_id):
+        """Obtenir le solde pour un opérateur spécifique"""
+        self.ensure_one()
+        balance = self.balance_ids.filtered(lambda b: b.network_id.id == network_id)
+        if balance:
+            return balance[0].balance
+        return 0.0
+
+    def get_or_create_balance(self, network_id):
+        """Obtenir ou créer un solde pour un opérateur donné"""
+        self.ensure_one()
+        balance = self.balance_ids.filtered(lambda b: b.network_id.id == network_id)
+        if not balance:
+            balance = self.env["mm.balance"].create({
+                "customer_id": self.id,
+                "network_id": network_id,
+                "balance": 0.0,
+            })
+        else:
+            balance = balance[0]
+        return balance
+
+    def action_view_balances(self):
+        """Voir tous les soldes par opérateur"""
+        self.ensure_one()
+        action = {
+            "name": "Soldes par Opérateur",
+            "type": "ir.actions.act_window",
+            "res_model": "mm.balance",
+            "view_mode": "tree,form",
+            "domain": [("customer_id", "=", self.id)],
+            "context": {"default_customer_id": self.id},
+        }
+        return action
+
+    def action_add_balance(self):
+        """Ajouter un solde pour un nouvel opérateur"""
+        self.ensure_one()
+        return {
+            "name": "Ajouter un Solde",
+            "type": "ir.actions.act_window",
+            "res_model": "mm.balance",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_customer_id": self.id,
+                "default_balance": 0.0,
+            },
+        }

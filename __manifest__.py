@@ -20,10 +20,13 @@
         "data/mm_limit_policies.xml",
         "data/mm_network_data.xml",
         "data/mm_agent_sync.xml",
+
         "wizard/mm_deplafonnement_wizard_views.xml",
         "wizard/stats_report_wizard_views.xml",
         "views/mm_agent_views.xml",
+        "views/mm_agent_balance_views.xml",
         "views/mm_customer_views.xml",
+        "views/mm_balance_views.xml",
         "views/mm_transaction_views.xml",
         "views/mm_service_point_views.xml",
         "views/mm_policy_views.xml",
@@ -35,6 +38,16 @@
         "report/mm_stats_report_templates.xml",
         "report/mm_stats_report_actions.xml"
     ],
+    "assets": {
+        "web.assets_backend": [
+            "mm_manager/static/src/css/dashboard.css",
+            "mm_manager/static/src/js/dashboard.js",
+            "mm_manager/static/src/xml/dashboard_templates.xml",
+        ],
+        "web.assets_frontend": [
+            "mm_manager/static/src/css/dashboard.css",
+        ],
+    },
     "application": True,
     "installable": True,
     "auto_install": False

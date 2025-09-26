@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View pour les soldes agents -->
+    <record id="mm_agent_balance_tree_view" model="ir.ui.view">
+        <field name="name">mm.agent.balance.tree</field>
+        <field name="model">mm.agent.balance</field>
+        <field name="arch" type="xml">
+            <list string="Soldes Agents" create="true" edit="true" delete="true" editable="bottom">
+                <field name="agent_id" required="1"/>
+                <field name="balance_type" required="1"/>
+                <field name="network_id" optional="show" 
+                       invisible="balance_type == 'cash'" 
+                       required="balance_type == 'network'"/>
+                <field name="balance" widget="monetary" sum="Total"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="last_update_date" optional="hide"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View pour les soldes agents -->
+    <record id="mm_agent_balance_form_view" model="ir.ui.view">
+        <field name="name">mm.agent.balance.form</field>
+        <field name="model">mm.agent.balance</field>
+        <field name="arch" type="xml">
+            <form string="Solde Agent">
+                <header>
+                    <button name="action_view_transactions" type="object" string="Voir les Transactions" class="oe_highlight"/>
+                    <button name="action_add_cash" type="object" string="Ajouter Liquidités" class="btn-success" invisible="balance_type != 'cash'"/>
+                    <button name="action_remove_cash" type="object" string="Retirer Liquidités" class="btn-warning" invisible="balance_type != 'cash'"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1" placeholder="Nouveau solde agent"/>
+                        </h1>
+                    </div>
+                    
+                    <group string="Informations du Solde">
+                        <group string="Agent">
+                            <field name="agent_id" options="{'no_create': True}" required="1"/>
+                            <field name="user_id" readonly="1"/>
+                        </group>
+                        <group string="Type et Montant">
+                            <field name="balance_type" required="1"/>
+                            <field name="network_id" options="{'no_create': True}" 
+                                   invisible="balance_type == 'cash'" 
+                                   required="balance_type == 'network'"
+                                   string="Opérateur Mobile Money"/>
+                            <field name="balance" widget="monetary" required="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Informations Système">
+                        <group>
+                            <field name="last_update_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View pour les soldes agents -->
+    <record id="mm_agent_balance_search_view" model="ir.ui.view">
+        <field name="name">mm.agent.balance.search</field>
+        <field name="model">mm.agent.balance</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher Soldes Agents">
+                <field name="agent_id"/>
+                <field name="user_id"/>
+                <field name="network_id"/>
+                <field name="balance_type"/>
+                <field name="balance"/>
+                <separator/>
+                <filter name="active" string="Actif" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactif" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="network_balances" string="Soldes Opérateurs" domain="[('balance_type', '=', 'network')]"/>
+                <filter name="cash_balances" string="Soldes Caisse" domain="[('balance_type', '=', 'cash')]"/>
+                <separator/>
+                <filter name="positive_balance" string="Solde Positif" domain="[('balance', '>', 0)]"/>
+                <filter name="zero_balance" string="Solde Zéro" domain="[('balance', '=', 0)]"/>
+                <separator/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_agent" string="Agent" context="{'group_by': 'agent_id'}"/>
+                    <filter name="group_balance_type" string="Type de Solde" context="{'group_by': 'balance_type'}"/>
+                    <filter name="group_network" string="Opérateur" context="{'group_by': 'network_id'}"/>
+                    <filter name="group_company" string="Société" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action pour les soldes agents -->
+    <record id="mm_agent_balance_action" model="ir.actions.act_window">
+        <field name="name">Soldes Agents</field>
+        <field name="res_model">mm.agent.balance</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="mm_agent_balance_search_view"/>
+        <field name="context">{'default_balance': 0.0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau solde agent
+            </p>
+            <p>
+                <strong>Soldes Opérateurs :</strong> Gérez l'argent virtuel de vos agents sur chaque plateforme mobile money.<br/>
+                <strong>Solde Caisse :</strong> Gérez les liquidités physiques de vos agents.<br/><br/>
+                Chaque agent peut avoir des soldes séparés pour Wave, Orange Money, Moov Money, MTN Money, etc.
+            </p>
+        </field>
+    </record>
+
+    <!-- Kanban View pour les soldes agents -->
+    <record id="mm_agent_balance_kanban_view" model="ir.ui.view">
+        <field name="name">mm.agent.balance.kanban</field>
+        <field name="model">mm.agent.balance</field>
+        <field name="arch" type="xml">
+            <kanban string="Soldes Agents">
+                <field name="agent_id"/>
+                <field name="balance_type"/>
+                <field name="network_id"/>
+                <field name="balance"/>
+                <field name="currency_id"/>
+                <field name="last_update_date"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <strong><field name="agent_id"/></strong>
+                                    </div>
+                                    <div class="o_secondary">
+                                        <t t-if="record.balance_type.raw_value == 'cash'">
+                                            <i class="fa fa-money-bill-wave"></i> Caisse Physique
+                                        </t>
+                                        <t t-else="">
+                                            <i class="fa fa-mobile"></i> <field name="network_id"/>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Solde:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="badge badge-pill badge-success" t-if="record.balance.raw_value > 0">
+                                            <field name="balance" widget="monetary"/>
+                                        </span>
+                                        <span class="badge badge-pill badge-warning" t-if="record.balance.raw_value == 0">
+                                            <field name="balance" widget="monetary"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <small>Mis à jour: <field name="last_update_date"/></small>
+                                    </div>
+                                </div>
+                                <div class="row mt-2" t-if="record.balance_type.raw_value == 'cash'">
+                                    <div class="col-12">
+                                        <button name="action_add_cash" type="object" class="btn btn-sm btn-success">
+                                            <i class="fa fa-plus"></i> Ajouter
+                                        </button>
+                                        <button name="action_remove_cash" type="object" class="btn btn-sm btn-warning ml-1">
+                                            <i class="fa fa-minus"></i> Retirer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Pivot View pour analyse des soldes -->
+    <record id="mm_agent_balance_pivot_view" model="ir.ui.view">
+        <field name="name">mm.agent.balance.pivot</field>
+        <field name="model">mm.agent.balance</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse Soldes Agents">
+                <field name="agent_id" type="row"/>
+                <field name="balance_type" type="col"/>
+                <field name="balance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Vue formulaire rapide pour création -->
+    <record id="mm_agent_balance_form_quick" model="ir.ui.view">
+        <field name="name">mm.agent.balance.form.quick</field>
+        <field name="model">mm.agent.balance</field>
+        <field name="arch" type="xml">
+            <form string="Nouveau Solde Agent">
+                <sheet>
+                    <group>
+                        <field name="agent_id" options="{'no_create': True}" placeholder="Sélectionner un agent..."/>
+                        <field name="balance_type" widget="radio"/>
+                        <field name="network_id" options="{'no_create': True}" 
+                               placeholder="Sélectionner un opérateur..."
+                               invisible="balance_type == 'cash'" 
+                               required="balance_type == 'network'"/>
+                        <field name="balance" widget="monetary" placeholder="0.00"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Créer" type="object" name="create" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action pour création rapide -->
+    <record id="mm_agent_balance_action_new" model="ir.actions.act_window">
+        <field name="name">Nouveau Solde Agent</field>
+        <field name="res_model">mm.agent.balance</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="mm_agent_balance_form_quick"/>
+        <field name="target">new</field>
+        <field name="context">{'default_balance': 0.0, 'default_balance_type': 'network'}</field>
+    </record>
+
+    <!-- Ajouter les vues à l'action -->
+    <record id="mm_agent_balance_action" model="ir.actions.act_window">
+        <field name="view_mode">kanban,list,form,pivot</field>
+    </record>
+
+</odoo>

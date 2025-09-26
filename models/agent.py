@@ -24,6 +24,7 @@ class MobileMoneyAgent(models.Model):
     transaction_ids = fields.One2many(
         "mm.transaction", "agent_id", string="Transactions"
     )
+    balance_ids = fields.One2many("mm.agent.balance", "agent_id", string="Soldes Agent")
     transaction_count = fields.Integer(
         string="Nb. Transactions", compute="_compute_stats", store=False
     )
@@ -35,6 +36,24 @@ class MobileMoneyAgent(models.Model):
     )
     currency_id = fields.Many2one(
         "res.currency", related="company_id.currency_id", store=True, readonly=True
+    )
+    total_network_balance = fields.Monetary(
+        string="Total Soldes Opérateurs", 
+        compute="_compute_total_balances", 
+        store=False, 
+        currency_field="currency_id"
+    )
+    cash_balance = fields.Monetary(
+        string="Solde Caisse", 
+        compute="_compute_total_balances", 
+        store=False, 
+        currency_field="currency_id"
+    )
+    total_balance = fields.Monetary(
+        string="Solde Total", 
+        compute="_compute_total_balances", 
+        store=False, 
+        currency_field="currency_id"
     )
 
     _sql_constraints = [
@@ -56,6 +75,16 @@ class MobileMoneyAgent(models.Model):
             rec.transaction_count = len(txs)
             rec.transaction_total_amount = sum(txs.mapped("amount"))
             rec.last_transaction_date = max(txs.mapped("transaction_date")) if txs else False
+
+    @api.depends("balance_ids.balance", "balance_ids.balance_type")
+    def _compute_total_balances(self):
+        for rec in self:
+            network_balances = rec.balance_ids.filtered(lambda b: b.balance_type == "network")
+            cash_balances = rec.balance_ids.filtered(lambda b: b.balance_type == "cash")
+            
+            rec.total_network_balance = sum(network_balances.mapped("balance"))
+            rec.cash_balance = sum(cash_balances.mapped("balance"))  # Devrait être 1 seul solde de caisse
+            rec.total_balance = rec.total_network_balance + rec.cash_balance
 
     def action_open_transactions(self):
         self.ensure_one()
@@ -100,3 +129,90 @@ class MobileMoneyAgent(models.Model):
             # Ne jamais bloquer l'exécution si la référence n'existe pas
             pass
         return True
+
+    def get_balance_for_network(self, network_id):
+        """Obtenir le solde pour un opérateur spécifique"""
+        self.ensure_one()
+        balance = self.balance_ids.filtered(
+            lambda b: b.balance_type == "network" and b.network_id.id == network_id
+        )
+        if balance:
+            return balance[0].balance
+        return 0.0
+
+    def get_cash_balance(self):
+        """Obtenir le solde de caisse"""
+        self.ensure_one()
+        balance = self.balance_ids.filtered(lambda b: b.balance_type == "cash")
+        if balance:
+            return balance[0].balance
+        return 0.0
+
+    def get_or_create_network_balance(self, network_id):
+        """Obtenir ou créer un solde pour un opérateur donné"""
+        self.ensure_one()
+        return self.env["mm.agent.balance"].get_or_create_agent_balance(
+            self.id, "network", network_id
+        )
+
+    def get_or_create_cash_balance(self):
+        """Obtenir ou créer le solde de caisse"""
+        self.ensure_one()
+        return self.env["mm.agent.balance"].get_or_create_agent_balance(
+            self.id, "cash"
+        )
+
+    def check_network_balance(self, network_id, amount):
+        """Vérifier si l'agent a suffisamment de solde pour un opérateur"""
+        self.ensure_one()
+        balance_record = self.get_or_create_network_balance(network_id)
+        return balance_record.check_sufficient_balance(amount)
+
+    def check_cash_balance(self, amount):
+        """Vérifier si l'agent a suffisamment de liquidités en caisse"""
+        self.ensure_one()
+        balance_record = self.get_or_create_cash_balance()
+        return balance_record.check_sufficient_balance(amount)
+
+    def action_view_balances(self):
+        """Voir tous les soldes de l'agent"""
+        self.ensure_one()
+        action = {
+            "name": "Soldes Agent",
+            "type": "ir.actions.act_window",
+            "res_model": "mm.agent.balance",
+            "view_mode": "tree,form",
+            "domain": [("agent_id", "=", self.id)],
+            "context": {"default_agent_id": self.id},
+        }
+        return action
+
+    def action_add_network_balance(self):
+        """Ajouter un solde pour un nouvel opérateur"""
+        self.ensure_one()
+        return {
+            "name": "Ajouter Solde Opérateur",
+            "type": "ir.actions.act_window",
+            "res_model": "mm.agent.balance",
+            "view_mode": "form",
+            "view_id": self.env.ref("mm_manager.mm_agent_balance_form_quick").id,
+            "target": "new",
+            "context": {
+                "default_agent_id": self.id,
+                "default_balance_type": "network",
+                "default_balance": 0.0,
+            },
+        }
+
+    def action_manage_cash(self):
+        """Gérer la caisse de l'agent"""
+        self.ensure_one()
+        cash_balance = self.get_or_create_cash_balance()
+        return {
+            "name": "Gérer la Caisse",
+            "type": "ir.actions.act_window",
+            "res_model": "mm.agent.balance",
+            "view_mode": "form",
+            "res_id": cash_balance.id,
+            "target": "current",
+        }

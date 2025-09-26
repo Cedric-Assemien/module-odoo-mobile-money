@@ -9,6 +9,8 @@
                 <field name="status"/>
                 <field name="service_point_id"/>
                 <field name="agent_id"/>
+                <field name="total_balance" widget="monetary"/>
+                <field name="currency_id" invisible="1"/>
                 <field name="monthly_transaction_total"/>
                 <field name="monthly_transaction_count"/>
             </list>
@@ -30,6 +32,15 @@
                     <div class="oe_button_box" name="button_box">
                         <button type="object" name="action_open_transactions" class="oe_stat_button" icon="fa-exchange-alt">
                             <field name="monthly_transaction_count" widget="statinfo" string="Transactions"/>
+                        </button>
+                        <button type="object" name="action_view_balances" class="oe_stat_button" icon="fa-wallet">
+                            <field name="total_balance" widget="statinfo" string="Solde Total"/>
+                        </button>
+                        <button type="object" name="action_add_balance" class="oe_stat_button" icon="fa-plus">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Ajouter</span>
+                                <span class="o_stat_text">Solde</span>
+                            </div>
                         </button>
                     </div>
                     <group>
@@ -54,6 +65,18 @@
                         <field name="last_transaction_date" readonly="1"/>
                     </group>
                     <notebook>
+                        <page string="Soldes par Opérateur">
+                            <field name="balance_ids">
+                                <list string="Soldes" create="1" delete="1" edit="1">
+                                    <field name="network_id"/>
+                                    <field name="balance" widget="monetary"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="last_update_date"/>
+                                    <field name="active"/>
+                                    <button name="action_view_transactions" type="object" string="Transactions" icon="fa fa-list" class="btn-link"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Transactions">
                             <field name="transaction_ids" readonly="1">
                                 <list string="Transactions" create="0" delete="0">

@@ -14,3 +14,9 @@ access_mm_deplafonnement_wizard,access.mm.deplafonnement.wizard,model_mm_deplafo
 access_mm_agent_user,access.mm.agent.user,model_mm_agent,mm_manager.mm_group_user,1,1,1,0
 access_mm_agent_manager,access.mm.agent.manager,model_mm_agent,mm_manager.mm_group_manager,1,1,1,1
 access_mm_stats_report_wizard,access.mm.stats.report.wizard,model_mm_stats_report_wizard,base.group_user,1,1,1,1
+access_mm_dashboard_user,access.mm.dashboard.user,model_mm_dashboard,mm_manager.mm_group_user,1,0,0,0
+access_mm_dashboard_manager,access.mm.dashboard.manager,model_mm_dashboard,mm_manager.mm_group_manager,1,1,1,1
+access_mm_balance_user,access.mm.balance.user,model_mm_balance,mm_manager.mm_group_user,1,1,1,0
+access_mm_balance_manager,access.mm.balance.manager,model_mm_balance,mm_manager.mm_group_manager,1,1,1,1
+access_mm_agent_balance_user,access.mm.agent.balance.user,model_mm_agent_balance,mm_manager.mm_group_user,1,1,1,0
+access_mm_agent_balance_manager,access.mm.agent.balance.manager,model_mm_agent_balance,mm_manager.mm_group_manager,1,1,1,1

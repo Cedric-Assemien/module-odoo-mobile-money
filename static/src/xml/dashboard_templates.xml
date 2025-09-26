@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    
+    <!-- Template principal du dashboard -->
+    <t t-name="mm_manager.DashboardTemplate" owl="1">
+        <div class="o_mm_dashboard_wrapper">
+            <!-- Indicateur de chargement -->
+            <div t-if="state.loading" class="o_loading_indicator">
+                <i class="fa fa-spinner fa-spin fa-2x"/>
+                <p>Chargement des données...</p>
+            </div>
+
+            <!-- Contenu principal du dashboard -->
+            <div t-else="" class="o_mm_dashboard_content">
+                
+                <!-- En-tête avec bouton de rafraîchissement -->
+                <div class="o_dashboard_header">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1><i class="fa fa-mobile"/> Tableau de Bord Mobile Money</h1>
+                            <p class="text-muted">Dernière mise à jour: <t t-esc="formatLastUpdate()"/></p>
+                        </div>
+                        <button class="btn btn-outline-primary" t-on-click="refreshData">
+                            <i class="fa fa-refresh"/> Actualiser
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cartes de statistiques -->
+                <div class="row o_dashboard_stats">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="o_stat_card bg-primary" t-on-click="openTransactions">
+                            <div class="o_stat_icon bg-primary">
+                                <i class="fa fa-credit-card fa-2x"/>
+                            </div>
+                            <div class="o_stat_content">
+                                <h3 class="o_stat_value">
+                                    <t t-esc="formatNumber(state.stats.transactions_today)"/>
+                                </h3>
+                                <p class="o_stat_label">Transactions Aujourd'hui</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="o_stat_card bg-success" t-on-click="openCustomers">
+                            <div class="o_stat_icon bg-success">
+                                <i class="fa fa-users fa-2x"/>
+                            </div>
+                            <div class="o_stat_content">
+                                <h3 class="o_stat_value">
+                                    <t t-esc="formatNumber(state.stats.customers_active)"/>
+                                </h3>
+                                <p class="o_stat_label">Clients Actifs</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="o_stat_card bg-warning" t-on-click="openAgents">
+                            <div class="o_stat_icon bg-warning">
+                                <i class="fa fa-user-tie fa-2x"/>
+                            </div>
+                            <div class="o_stat_content">
+                                <h3 class="o_stat_value">
+                                    <t t-esc="formatNumber(state.stats.agents_active)"/>
+                                </h3>
+                                <p class="o_stat_label">Agents Actifs</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="o_stat_card bg-info" t-on-click="openServicePoints">
+                            <div class="o_stat_icon bg-info">
+                                <i class="fa fa-map-marker fa-2x"/>
+                            </div>
+                            <div class="o_stat_content">
+                                <h3 class="o_stat_value">
+                                    <t t-esc="formatNumber(state.stats.service_points_active)"/>
+                                </h3>
+                                <p class="o_stat_label">Points de Service</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Accès Rapide Operations -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h2 class="o_section_title">
+                            <i class="fa fa-bolt"/> Accès Rapide - Opérations
+                        </h2>
+                    </div>
+                </div>
+                
+                <div class="row o_dashboard_actions">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="o_action_card" t-on-click="openTransactions">
+                            <div class="o_action_icon bg-primary">
+                                <i class="fa fa-exchange fa-2x"/>
+                            </div>
+                            <div class="o_action_content">
+                                <h5>Transactions</h5>
+                                <p>Gérer toutes les transactions</p>
+                                <button class="btn btn-primary btn-sm">
+                                    Accéder
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="o_action_card" t-on-click="openCustomers">
+                            <div class="o_action_icon bg-success">
+                                <i class="fa fa-users fa-2x"/>
+                            </div>
+                            <div class="o_action_content">
+                                <h5>Clients</h5>
+                                <p>Gérer la base clients</p>
+                                <button class="btn btn-success btn-sm">
+                                    Accéder
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="o_action_card" t-on-click="openAgents">
+                            <div class="o_action_icon bg-warning">
+                                <i class="fa fa-user-tie fa-2x"/>
+                            </div>
+                            <div class="o_action_content">
+                                <h5>Agents</h5>
+                                <p>Gérer les agents</p>
+                                <button class="btn btn-warning btn-sm">
+                                    Accéder
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="o_action_card" t-on-click="openServicePoints">
+                            <div class="o_action_icon bg-info">
+                                <i class="fa fa-map-marker fa-2x"/>
+                            </div>
+                            <div class="o_action_content">
+                                <h5>Points de Service</h5>
+                                <p>Gérer les points de service</p>
+                                <button class="btn btn-info btn-sm">
+                                    Accéder
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section Actions Rapides Supplémentaires -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4><i class="fa fa-flash"/> Actions Rapides</h4>
+                        <div class="btn-group d-flex flex-wrap" role="group">
+                            <button class="btn btn-primary flex-fill m-1" t-on-click="createTransaction">
+                                <i class="fa fa-plus"/> Nouvelle Transaction
+                            </button>
+                            <button class="btn btn-success flex-fill m-1" t-on-click="createCustomer">
+                                <i class="fa fa-user-plus"/> Nouveau Client
+                            </button>
+                            <button class="btn btn-info flex-fill m-1" t-on-click="openReports">
+                                <i class="fa fa-file-text"/> Rapports
+                            </button>
+                            <button class="btn btn-warning flex-fill m-1" t-on-click="syncAgents">
+                                <i class="fa fa-refresh"/> Synchroniser Agents
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section de montant total -->
+                <div class="row mt-4" t-if="state.stats.total_amount_today > 0">
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h4>
+                                <i class="fa fa-money"/> Montant Total Aujourd'hui: 
+                                <strong t-esc="formatCurrency(state.stats.total_amount_today)"/>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Template pour l'indicateur de chargement -->
+    <t t-name="mm_manager.LoadingTemplate" owl="1">
+        <div class="o_loading_wrapper text-center p-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Chargement...</span>
+            </div>
+            <p class="mt-3 text-muted">Chargement des données du dashboard...</p>
+        </div>
+    </t>
+
+</templates>

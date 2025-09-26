@@ -1,4 +1,320 @@
 <odoo>
+    <!-- TABLEAU DE BORD MODERNE MOBILE MONEY -->
+    
+    <!-- Vue Dashboard principale avec cartes et accès rapides -->
+    <record id="mm_dashboard_main" model="ir.ui.view">
+        <field name="name">mm.dashboard.main</field>
+        <field name="model">mm.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Tableau de Bord Mobile Money" class="o_mm_dashboard">
+                <header>
+                    <div class="oe_title">
+                        <h1>
+                            <i class="fa fa-mobile"/> Tableau de Bord Mobile Money
+                        </h1>
+                        <p class="oe_grey">Accès rapide aux fonctionnalités principales</p>
+                    </div>
+                </header>
+                
+                <sheet>
+                    <!-- Section Statistiques Rapides -->
+                    <div class="row o_dashboard_stats">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="o_stat_card bg-primary">
+                                <div class="o_stat_icon bg-primary">
+                                    <i class="fa fa-credit-card fa-2x"/>
+                                </div>
+                                <div class="o_stat_content">
+                                    <h3 class="o_stat_value">
+                                        <field name="transaction_count"/>
+                                    </h3>
+                                    <p class="o_stat_label">Transactions Aujourd'hui</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <div class="o_stat_card bg-success">
+                                <div class="o_stat_icon bg-success">
+                                    <i class="fa fa-users fa-2x"/>
+                                </div>
+                                <div class="o_stat_content">
+                                    <h3 class="o_stat_value">
+                                        <field name="customer_count"/>
+                                    </h3>
+                                    <p class="o_stat_label">Clients Actifs</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <div class="o_stat_card bg-warning">
+                                <div class="o_stat_icon bg-warning">
+                                    <i class="fa fa-user-tie fa-2x"/>
+                                </div>
+                                <div class="o_stat_content">
+                                    <h3 class="o_stat_value">
+                                        <field name="agent_count"/>
+                                    </h3>
+                                    <p class="o_stat_label">Agents Actifs</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <div class="o_stat_card bg-info">
+                                <div class="o_stat_icon bg-info">
+                                    <i class="fa fa-map-marker fa-2x"/>
+                                </div>
+                                <div class="o_stat_content">
+                                    <h3 class="o_stat_value">
+                                        <field name="service_point_count"/>
+                                    </h3>
+                                    <p class="o_stat_label">Points de Service</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section Accès Rapide Operations -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h2 class="o_section_title">
+                                <i class="fa fa-bolt"/> Accès Rapide - Opérations
+                            </h2>
+                        </div>
+                    </div>
+                    
+                    <div class="row o_dashboard_actions">
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="o_action_card" data-action="mm_manager.mm_transaction_action">
+                                <div class="o_action_icon bg-primary">
+                                    <i class="fa fa-exchange fa-2x"/>
+                                </div>
+                                <div class="o_action_content">
+                                    <h5>Transactions</h5>
+                                    <p>Gérer toutes les transactions</p>
+                                    <button type="object" name="action_view_transactions" class="btn btn-primary btn-sm">
+                                        Accéder
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="o_action_card" data-action="mm_manager.mm_customer_action">
+                                <div class="o_action_icon bg-success">
+                                    <i class="fa fa-users fa-2x"/>
+                                </div>
+                                <div class="o_action_content">
+                                    <h5>Clients</h5>
+                                    <p>Gérer la base clients</p>
+                                    <button type="object" name="action_view_customers" class="btn btn-success btn-sm">
+                                        Accéder
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="o_action_card" data-action="mm_manager.mm_agent_action">
+                                <div class="o_action_icon bg-warning">
+                                    <i class="fa fa-user-tie fa-2x"/>
+                                </div>
+                                <div class="o_action_content">
+                                    <h5>Agents</h5>
+                                    <p>Gérer les agents</p>
+                                    <button type="object" name="action_view_agents" class="btn btn-warning btn-sm">
+                                        Accéder
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="o_action_card" data-action="mm_manager.mm_service_point_action">
+                                <div class="o_action_icon bg-info">
+                                    <i class="fa fa-map-marker fa-2x"/>
+                                </div>
+                                <div class="o_action_content">
+                                    <h5>Points de Service</h5>
+                                    <p>Gérer les points de service</p>
+                                    <button type="object" name="action_view_service_points" class="btn btn-info btn-sm">
+                                        Accéder
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section Montant Total -->
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+                            <div class="o_chart_container">
+                                <h4><i class="fa fa-money"/> Montant Total Aujourd'hui</h4>
+                                <h2 class="text-success">
+                                    <field name="total_amount_today" widget="monetary"/>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="o_chart_container">
+                                <h4><i class="fa fa-calendar"/> Statistiques</h4>
+                                <p>Données en temps réel pour le pilotage de votre activité Mobile Money</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section Actions Rapides Supplémentaires -->
+                    <div class="row mt-4 mb-4">
+                        <div class="col-12">
+                            <h4 class="mb-3"><i class="fa fa-flash"/> Actions Rapides</h4>
+                            <div class="row o_quick_actions">
+                                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                                    <button type="object" name="action_new_transaction" class="btn btn-primary btn-block btn-lg o_quick_btn">
+                                        <i class="fa fa-plus"/> Nouvelle Transaction
+                                    </button>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                                    <button type="object" name="action_new_customer" class="btn btn-success btn-block btn-lg o_quick_btn">
+                                        <i class="fa fa-user-plus"/> Nouveau Client
+                                    </button>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                                    <button type="object" name="action_reports" class="btn btn-info btn-block btn-lg o_quick_btn">
+                                        <i class="fa fa-file-text"/> Rapports
+                                    </button>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                                    <button type="object" name="action_sync_agents" class="btn btn-warning btn-block btn-lg o_quick_btn">
+                                        <i class="fa fa-refresh"/> Synchroniser Agents
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+                
+                <style>
+                    .o_mm_dashboard {
+                        background: #f8f9fa;
+                    }
+                    .o_dashboard_stats .o_stat_card {
+                        background: white;
+                        border-radius: 12px;
+                        padding: 20px;
+                        margin-bottom: 20px;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        display: flex;
+                        align-items: center;
+                        transition: transform 0.2s ease;
+                    }
+                    .o_dashboard_stats .o_stat_card:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                    }
+                    .o_stat_icon {
+                        margin-right: 15px;
+                        color: white;
+                        padding: 15px;
+                        border-radius: 50%;
+                        min-width: 60px;
+                        text-align: center;
+                    }
+                    .o_stat_content h3 {
+                        font-size: 2em;
+                        font-weight: bold;
+                        margin: 0;
+                        color: #2c3e50;
+                    }
+                    .o_stat_label {
+                        margin: 0;
+                        color: #7f8c8d;
+                        font-size: 0.9em;
+                    }
+                    .o_dashboard_actions .o_action_card {
+                        background: white;
+                        border-radius: 12px;
+                        padding: 20px;
+                        text-align: center;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        transition: all 0.3s ease;
+                        cursor: pointer;
+                        height: 100%;
+                    }
+                    .o_dashboard_actions .o_action_card:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                    }
+                    .o_action_icon {
+                        margin: 0 auto 15px;
+                        width: 80px;
+                        height: 80px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                    }
+                    .o_action_content h5 {
+                        font-weight: bold;
+                        margin-bottom: 10px;
+                        color: #2c3e50;
+                    }
+                    .o_action_content p {
+                        color: #7f8c8d;
+                        margin-bottom: 15px;
+                    }
+                    .o_section_title {
+                        color: #2c3e50;
+                        border-bottom: 2px solid #3498db;
+                        padding-bottom: 10px;
+                        margin-bottom: 20px;
+                    }
+                    .o_chart_container {
+                        background: white;
+                        border-radius: 12px;
+                        padding: 20px;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        margin-bottom: 20px;
+                    }
+                    .o_chart_container h4 {
+                        color: #2c3e50;
+                        margin-bottom: 15px;
+                    }
+                    /* Styles pour les actions rapides */
+                    .o_quick_actions {
+                        margin-bottom: 30px;
+                    }
+                    .o_quick_btn {
+                        border-radius: 8px;
+                        font-weight: 600;
+                        padding: 12px 20px;
+                        transition: all 0.3s ease;
+                        border: none;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    }
+                    .o_quick_btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                    }
+                    .o_quick_btn i {
+                        margin-right: 8px;
+                    }
+                    /* Assurer que la section ne déborde pas */
+                    .o_mm_dashboard .o_form_sheet_bg {
+                        min-height: auto !important;
+                        padding-bottom: 30px;
+                    }
+                    .o_mm_dashboard sheet {
+                        overflow: visible !important;
+                        min-height: auto !important;
+                    }
+                </style>
+            </form>
+        </field>
+    </record>
+
     <!-- Vue graph existante pour Transactions (déjà présente) -->
     <record id="mm_transaction_kanban" model="ir.ui.view">
         <field name="name">mm.transaction.kanban</field>
@@ -93,5 +409,31 @@
         <field name="view_mode">graph,pivot,list</field>
         <field name="view_id" ref="mm_customer_tx_graph"/>
         <field name="search_view_id" ref="mm_transaction_search"/>
+    </record>
+
+    <!-- Action principale pour le tableau de bord moderne -->
+    <record id="mm_main_dashboard_action" model="ir.actions.act_window">
+        <field name="name">Tableau de Bord Mobile Money</field>
+        <field name="res_model">mm.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="mm_dashboard_main"/>
+        <field name="target">current</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Actions pour les boutons d'accès rapide -->
+    <record id="mm_quick_transaction_action" model="ir.actions.act_window">
+        <field name="name">Nouvelle Transaction</field>
+        <field name="res_model">mm.transaction</field>
+        <field name="view_mode">form,tree</field>
+        <field name="target">current</field>
+        <field name="context">{'default_transaction_date': context_today()}</field>
+    </record>
+
+    <record id="mm_quick_customer_action" model="ir.actions.act_window">
+        <field name="name">Nouveau Client</field>
+        <field name="res_model">mm.customer</field>
+        <field name="view_mode">form,tree</field>
+        <field name="target">current</field>
     </record>
 </odoo>

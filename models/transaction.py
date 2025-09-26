@@ -96,6 +96,8 @@ class MobileMoneyTransaction(models.Model):
         for transaction in self:
             transaction._ensure_customer_in_company()
             transaction._check_plafonds()
+            transaction._check_balance()
+            transaction._update_balance()
             transaction.state = "confirmed"
             transaction.refusal_reason = False
             transaction._post_monthly_threshold_notifications()
@@ -149,6 +151,145 @@ class MobileMoneyTransaction(models.Model):
             total += transaction.amount
             if total > monthly_limit:
                 raise ValidationError("Limite mensuelle atteinte pour ce client.")
+
+    def _check_balance(self):
+        """Vérifier si le client et l'agent ont des soldes suffisants pour la transaction"""
+        for transaction in self:
+            # Vérification des soldes client
+            if transaction.transaction_type == "withdrawal":
+                # Pour un retrait, vérifier le solde disponible du client
+                customer_balance = transaction.customer_id.get_or_create_balance(transaction.network_id.id)
+                if not customer_balance.check_sufficient_balance(transaction.amount):
+                    raise ValidationError(
+                        f"Solde client insuffisant sur {transaction.network_id.name}. "
+                        f"Solde disponible: {customer_balance.balance} {transaction.currency_id.symbol}, "
+                        f"Montant demandé: {transaction.amount} {transaction.currency_id.symbol}"
+                    )
+            elif transaction.transaction_type == "transfer":
+                # Pour un transfert, vérifier le solde disponible du client (considéré comme un retrait)
+                customer_balance = transaction.customer_id.get_or_create_balance(transaction.network_id.id)
+                if not customer_balance.check_sufficient_balance(transaction.amount):
+                    raise ValidationError(
+                        f"Solde client insuffisant sur {transaction.network_id.name} pour le transfert. "
+                        f"Solde disponible: {customer_balance.balance} {transaction.currency_id.symbol}, "
+                        f"Montant demandé: {transaction.amount} {transaction.currency_id.symbol}"
+                    )
+            
+            # Vérification des soldes agent
+            if transaction.agent_id:
+                agent_record = transaction.env["mm.agent"].search([
+                    ("user_id", "=", transaction.agent_id.id)
+                ], limit=1)
+                
+                if agent_record:
+                    transaction._check_agent_balance(agent_record)
+
+    def _check_agent_balance(self, agent_record):
+        """Vérifier les soldes de l'agent pour la transaction"""
+        self.ensure_one()
+        
+        if self.transaction_type == "deposit":
+            # Pour un dépôt client : l'agent doit avoir assez dans sa caisse pour donner de l'argent liquide
+            if not agent_record.check_cash_balance(self.amount):
+                raise ValidationError(
+                    f"L'agent {agent_record.name} n'a pas assez de liquidités en caisse. "
+                    f"Caisse disponible: {agent_record.get_cash_balance()} {self.currency_id.symbol}, "
+                    f"Montant demandé: {self.amount} {self.currency_id.symbol}"
+                )
+        
+        elif self.transaction_type == "withdrawal":
+            # Pour un retrait client : l'agent doit avoir assez de solde opérateur pour effectuer l'opération
+            if not agent_record.check_network_balance(self.network_id.id, self.amount):
+                raise ValidationError(
+                    f"L'agent {agent_record.name} n'a pas assez de solde sur {self.network_id.name}. "
+                    f"Solde disponible: {agent_record.get_balance_for_network(self.network_id.id)} {self.currency_id.symbol}, "
+                    f"Montant demandé: {self.amount} {self.currency_id.symbol}"
+                )
+        
+        elif self.transaction_type == "transfer":
+            # Pour un transfert : même logique qu'un retrait côté agent
+            if not agent_record.check_network_balance(self.network_id.id, self.amount):
+                raise ValidationError(
+                    f"L'agent {agent_record.name} n'a pas assez de solde sur {self.network_id.name} pour le transfert. "
+                    f"Solde disponible: {agent_record.get_balance_for_network(self.network_id.id)} {self.currency_id.symbol}, "
+                    f"Montant demandé: {self.amount} {self.currency_id.symbol}"
+                )
+
+    def _update_balance(self):
+        """Mettre à jour les soldes du client et de l'agent après confirmation de la transaction"""
+        for transaction in self:
+            # Mise à jour des soldes client
+            customer_balance = transaction.customer_id.get_or_create_balance(transaction.network_id.id)
+            
+            if transaction.transaction_type == "deposit":
+                # Dépôt : ajouter au solde client
+                customer_balance.add_amount(
+                    transaction.amount, 
+                    f"Dépôt via transaction {transaction.name}"
+                )
+            elif transaction.transaction_type == "withdrawal":
+                # Retrait : soustraire du solde client
+                customer_balance.subtract_amount(
+                    transaction.amount,
+                    f"Retrait via transaction {transaction.name}"
+                )
+            elif transaction.transaction_type == "transfer":
+                # Transfert : soustraire du solde client (considéré comme un retrait)
+                customer_balance.subtract_amount(
+                    transaction.amount,
+                    f"Transfert sortant via transaction {transaction.name}"  
+                )
+            
+            # Mise à jour des soldes agent
+            if transaction.agent_id:
+                agent_record = transaction.env["mm.agent"].search([
+                    ("user_id", "=", transaction.agent_id.id)
+                ], limit=1)
+                
+                if agent_record:
+                    transaction._update_agent_balance(agent_record)
+            
+            # Pour les autres types (bill, airtime), pas de modifications supplémentaires
+
+    def _update_agent_balance(self, agent_record):
+        """Mettre à jour les soldes de l'agent selon le type de transaction"""
+        self.ensure_one()
+        
+        if self.transaction_type == "deposit":
+            # Dépôt client : l'agent perd de l'argent liquide mais gagne du solde opérateur
+            cash_balance = agent_record.get_or_create_cash_balance()
+            network_balance = agent_record.get_or_create_network_balance(self.network_id.id)
+            
+            cash_balance.subtract_amount(
+                self.amount,
+                f"Dépôt client {self.customer_id.name} - Transaction {self.name}"
+            )
+            network_balance.add_amount(
+                self.amount,
+                f"Dépôt client {self.customer_id.name} - Transaction {self.name}"
+            )
+        
+        elif self.transaction_type == "withdrawal":
+            # Retrait client : l'agent perd du solde opérateur mais gagne de l'argent liquide
+            cash_balance = agent_record.get_or_create_cash_balance()
+            network_balance = agent_record.get_or_create_network_balance(self.network_id.id)
+            
+            network_balance.subtract_amount(
+                self.amount,
+                f"Retrait client {self.customer_id.name} - Transaction {self.name}"
+            )
+            cash_balance.add_amount(
+                self.amount,
+                f"Retrait client {self.customer_id.name} - Transaction {self.name}"
+            )
+        
+        elif self.transaction_type == "transfer":
+            # Transfert : l'agent utilise son solde opérateur (pas d'impact sur la caisse)
+            network_balance = agent_record.get_or_create_network_balance(self.network_id.id)
+            network_balance.subtract_amount(
+                self.amount,
+                f"Transfert client {self.customer_id.name} - Transaction {self.name}"
+            )
 
     def _calculate_monthly_usage_percentage(self):
         self.ensure_one()

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View pour les soldes -->
+    <record id="mm_balance_tree_view" model="ir.ui.view">
+        <field name="name">mm.balance.tree</field>
+        <field name="model">mm.balance</field>
+        <field name="arch" type="xml">
+            <list string="Soldes par Opérateur" create="true" edit="true" delete="true" editable="bottom">
+                <field name="customer_id" required="1"/>
+                <field name="network_id" required="1"/>
+                <field name="balance" widget="monetary" sum="Total"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="last_update_date" optional="hide"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View pour les soldes -->
+    <record id="mm_balance_form_view" model="ir.ui.view">
+        <field name="name">mm.balance.form</field>
+        <field name="model">mm.balance</field>
+        <field name="arch" type="xml">
+            <form string="Solde par Opérateur">
+                <header>
+                    <button name="action_view_transactions" type="object" string="Voir les Transactions" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1" placeholder="Nouveau solde client"/>
+                        </h1>
+                    </div>
+                    
+                    <group string="Informations du Solde Client">
+                        <group string="Client et Opérateur">
+                            <field name="customer_id" options="{'no_create': True}" required="1"/>
+                            <field name="network_id" options="{'no_create': True}" required="1" string="Opérateur Mobile Money"/>
+                        </group>
+                        <group string="Montant">
+                            <field name="balance" widget="monetary" required="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Informations Système">
+                        <group>
+                            <field name="last_update_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View pour les soldes -->
+    <record id="mm_balance_search_view" model="ir.ui.view">
+        <field name="name">mm.balance.search</field>
+        <field name="model">mm.balance</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher Soldes">
+                <field name="customer_id"/>
+                <field name="network_id"/>
+                <field name="balance"/>
+                <separator/>
+                <filter name="active" string="Actif" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactif" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="positive_balance" string="Solde Positif" domain="[('balance', '>', 0)]"/>
+                <filter name="zero_balance" string="Solde Zéro" domain="[('balance', '=', 0)]"/>
+                <separator/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_customer" string="Client" context="{'group_by': 'customer_id'}"/>
+                    <filter name="group_network" string="Opérateur" context="{'group_by': 'network_id'}"/>
+                    <filter name="group_company" string="Société" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action pour les soldes -->
+    <record id="mm_balance_action" model="ir.actions.act_window">
+        <field name="name">Soldes par Opérateur</field>
+        <field name="res_model">mm.balance</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="mm_balance_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau solde par opérateur
+            </p>
+            <p>
+                Gérez les soldes des clients pour chaque opérateur de mobile money.
+                Chaque client peut avoir un solde différent pour Wave, Orange Money, Moov Money, MTN Money, etc.
+            </p>
+        </field>
+    </record>
+
+    <!-- Kanban View pour les soldes -->
+    <record id="mm_balance_kanban_view" model="ir.ui.view">
+        <field name="name">mm.balance.kanban</field>
+        <field name="model">mm.balance</field>
+        <field name="arch" type="xml">
+            <kanban string="Soldes par Opérateur">
+                <field name="customer_id"/>
+                <field name="network_id"/>
+                <field name="balance"/>
+                <field name="currency_id"/>
+                <field name="last_update_date"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <strong><field name="customer_id"/></strong>
+                                    </div>
+                                    <div class="o_secondary">
+                                        <field name="network_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Solde:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="badge badge-pill badge-success" t-if="record.balance.raw_value > 0">
+                                            <field name="balance" widget="monetary"/>
+                                        </span>
+                                        <span class="badge badge-pill badge-warning" t-if="record.balance.raw_value == 0">
+                                            <field name="balance" widget="monetary"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <small>Mis à jour: <field name="last_update_date"/></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Ajouter la vue kanban à l'action -->
+    <record id="mm_balance_action" model="ir.actions.act_window">
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,413 @@
+/* ==============================================
+   TABLEAU DE BORD MOBILE MONEY - STYLES MODERNES
+   ============================================== */
+
+.o_mm_dashboard {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* En-tête du dashboard */
+.o_mm_dashboard .oe_title {
+  text-align: center;
+  padding: 30px 0;
+  color: white;
+}
+
+.o_mm_dashboard .oe_title h1 {
+  font-size: 2.5em;
+  font-weight: 300;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.o_mm_dashboard .oe_title .oe_grey {
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+/* Section des statistiques */
+.o_dashboard_stats {
+  margin: 30px 0;
+}
+
+.o_dashboard_stats .o_stat_card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.o_dashboard_stats .o_stat_card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--card-color, #3498db),
+    rgba(255, 255, 255, 0.3)
+  );
+}
+
+.o_dashboard_stats .o_stat_card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.o_dashboard_stats .o_stat_card.bg-primary {
+  --card-color: #3498db;
+  border-left-color: #3498db;
+}
+
+.o_dashboard_stats .o_stat_card.bg-success {
+  --card-color: #2ecc71;
+  border-left-color: #2ecc71;
+}
+
+.o_dashboard_stats .o_stat_card.bg-warning {
+  --card-color: #f39c12;
+  border-left-color: #f39c12;
+}
+
+.o_dashboard_stats .o_stat_card.bg-info {
+  --card-color: #17a2b8;
+  border-left-color: #17a2b8;
+}
+
+.o_stat_icon {
+  margin-right: 20px;
+  color: white;
+  padding: 20px;
+  border-radius: 50%;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.o_stat_content h3 {
+  font-size: 2.2em;
+  font-weight: 700;
+  margin: 0;
+  color: #2c3e50;
+  line-height: 1;
+}
+
+.o_stat_label {
+  margin: 5px 0 0 0;
+  color: #7f8c8d;
+  font-size: 0.95em;
+  font-weight: 500;
+}
+
+/* Section des actions rapides */
+.o_dashboard_actions {
+  margin: 40px 0;
+}
+
+.o_dashboard_actions .o_action_card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s ease;
+  cursor: pointer;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.o_dashboard_actions .o_action_card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.o_dashboard_actions .o_action_card:hover::before {
+  left: 100%;
+}
+
+.o_dashboard_actions .o_action_card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.o_action_icon {
+  margin: 0 auto 20px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.o_dashboard_actions .o_action_card:hover .o_action_icon {
+  transform: rotateY(360deg);
+}
+
+.o_action_content h5 {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #2c3e50;
+  font-size: 1.2em;
+}
+
+.o_action_content p {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  font-size: 0.95em;
+}
+
+.o_action_content .btn {
+  border-radius: 25px;
+  padding: 8px 25px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.o_action_content .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Titres de section */
+.o_section_title {
+  color: white;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+  font-weight: 300;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Conteneurs de graphiques */
+.o_chart_container {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.o_chart_container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+.o_chart_container h4 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+/* Actions rapides supplémentaires */
+.o_quick_actions {
+  margin-bottom: 30px;
+}
+
+.o_quick_btn {
+  border-radius: 8px !important;
+  font-weight: 600;
+  padding: 12px 20px;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.o_quick_btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.o_quick_btn i {
+  margin-right: 8px;
+}
+
+/* Assurer que les sections s'affichent complètement */
+.o_mm_dashboard .o_form_sheet_bg {
+  min-height: auto !important;
+  padding-bottom: 30px;
+  overflow: visible !important;
+}
+
+.o_mm_dashboard .o_form_sheet {
+  overflow: visible !important;
+  min-height: auto !important;
+}
+
+/* Anciens styles btn-group pour compatibilité */
+.btn-group .btn {
+  border-radius: 25px;
+  margin: 0 5px;
+  padding: 12px 25px;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-group .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-group .btn i {
+  margin-right: 8px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.o_stat_card,
+.o_action_card,
+.o_chart_container {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.o_stat_card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.o_stat_card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.o_stat_card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.o_stat_card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.o_action_card:nth-child(1) {
+  animation-delay: 0.5s;
+}
+.o_action_card:nth-child(2) {
+  animation-delay: 0.6s;
+}
+.o_action_card:nth-child(3) {
+  animation-delay: 0.7s;
+}
+.o_action_card:nth-child(4) {
+  animation-delay: 0.8s;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .o_mm_dashboard .oe_title h1 {
+    font-size: 2em;
+  }
+
+  .o_stat_card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .o_stat_icon {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+
+  .o_dashboard_actions .o_action_card {
+    margin-bottom: 20px;
+  }
+
+  .o_quick_actions .col-lg-3 {
+    margin-bottom: 10px;
+  }
+
+  .o_quick_btn {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .btn-group .btn {
+    margin: 5px 0;
+    width: 100%;
+  }
+}
+
+/* Effets de hover spéciaux */
+.o_stat_card:hover .o_stat_icon {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Thème sombre (optionnel) */
+.o_mm_dashboard.dark-theme {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+.o_mm_dashboard.dark-theme .o_stat_card,
+.o_mm_dashboard.dark-theme .o_action_card,
+.o_mm_dashboard.dark-theme .o_chart_container {
+  background: #34495e;
+  color: white;
+}
+
+.o_mm_dashboard.dark-theme .o_stat_content h3,
+.o_mm_dashboard.dark-theme .o_action_content h5 {
+  color: white;
+}
+
+.o_mm_dashboard.dark-theme .o_stat_label,
+.o_mm_dashboard.dark-theme .o_action_content p {
+  color: #bdc3c7;
+}
